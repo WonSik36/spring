@@ -1,13 +1,10 @@
 package springbook;
 
-/**
- * Hello world!
- *
- */
+import springbook.user.dao.UserDao;
+
 public class App 
 {
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+    public static void main( String[] args )throws Exception{
+        UserDao.main(null);
     }
 }

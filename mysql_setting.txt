@@ -1,3 +1,5 @@
+mysql -hlocalhost -uroot -p
+
 CREATE DATABASE spring;
 USE spring;
 CREATE TABLE users(
@@ -5,3 +7,9 @@ CREATE TABLE users(
     name varchar(20) not null,
     password varchar(20) not null
 );
+
+Server time zone should be editted
+
+my.ini
+[mysqld]
+default-time-zone='+9:00'
