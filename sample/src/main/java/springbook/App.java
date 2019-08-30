@@ -1,10 +1,10 @@
 package springbook;
 
-import springbook.user.dao.UserDao;
+import springbook.user.dao.*;
 
 public class App 
 {
     public static void main( String[] args )throws Exception{
-        UserDao.main(null);
+        KUserDao.main(null);
     }
 }
