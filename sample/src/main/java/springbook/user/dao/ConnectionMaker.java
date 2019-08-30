@@ -2,6 +2,6 @@ package springbook.user.dao;
 
 import java.sql.*;
 
-public interface SimpleConnectionMaker{
+public interface ConnectionMaker{
     public Connection makeNewConnection() throws ClassNotFoundException, SQLException;
 }

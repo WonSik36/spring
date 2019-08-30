@@ -7,19 +7,19 @@ package springbook.user.dao;
 import springbook.user.domain.User;
 import java.sql.*;
 
-public abstract class UserDao{
-    private SimpleConnectionMaker simpleConnectionMaker;
+public class UserDao{
+    private ConnectionMaker ConnectionMaker;
     private final static String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
     private final static String _select_query = "SELECT * FROM users WHERE id = ?";
     private final static String _delete_all_query = "DELETE FROM users";
     private final static String _delete_query = "DELETE FROM users WHERE id = ?";
 
-    public UserDao(){
-        simpleConnectionMaker = new KConnectionMaker();
+    public UserDao(ConnectionMaker cm){
+        this.ConnectionMaker = cm;
     }
 
     public void add(User user)throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = ConnectionMaker.makeNewConnection();
         PreparedStatement ps = c.prepareStatement(_insert_query);
         ps.setString(1, user.getId());
         ps.setString(2, user.getName());
@@ -32,7 +32,7 @@ public abstract class UserDao{
     }
 
     public User get(String id)throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = ConnectionMaker.makeNewConnection();
         PreparedStatement ps = c.prepareStatement(_select_query);
         ps.setString(1, id);
 
@@ -51,7 +51,7 @@ public abstract class UserDao{
     }
 
     public void delete(String id)throws ClassNotFoundException, SQLException{
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = ConnectionMaker.makeNewConnection();
         PreparedStatement ps;
         if(id == null){
             ps = c.prepareStatement(_delete_all_query);
@@ -66,6 +66,4 @@ public abstract class UserDao{
         ps.close();
         c.close();
     }
-
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }
