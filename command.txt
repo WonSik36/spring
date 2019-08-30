@@ -1,2 +1,4 @@
 mvn assembly:assembly
 java -cp .\target\sample-1.0-SNAPSHOT-jar-with-dependencies.jar springbook.App
+//after launch
+mvn clean
