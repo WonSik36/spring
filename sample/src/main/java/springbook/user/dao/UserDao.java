@@ -4,7 +4,7 @@
 */
 package springbook.user.dao;
 
-import springbook.user.domain.*;
+import springbook.user.domain.User;
 import java.sql.*;
 
 public class UserDao{
@@ -19,6 +19,7 @@ public class UserDao{
     public static void main(String[] args)throws ClassNotFoundException, SQLException{
         UserDao dao = new UserDao();
         dao.delete(null);
+        System.out.println("Delete Success");
 
         User user = new User();
         user.setId("whiteship");
@@ -37,8 +38,7 @@ public class UserDao{
     }
 
     public void add(User user)throws ClassNotFoundException, SQLException{
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection(_url,_user,_pw);
+        Connection c = getConnection();
         PreparedStatement ps = c.prepareStatement(_insert_query);
         ps.setString(1, user.getId());
         ps.setString(2, user.getName());
@@ -51,8 +51,7 @@ public class UserDao{
     }
 
     public User get(String id)throws ClassNotFoundException, SQLException{
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection(_url,_user,_pw);
+        Connection c = getConnection();
         PreparedStatement ps = c.prepareStatement(_select_query);
         ps.setString(1, id);
 
@@ -71,8 +70,7 @@ public class UserDao{
     }
 
     public void delete(String id)throws ClassNotFoundException, SQLException{
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection(_url,_user,_pw);
+        Connection c = getConnection();
         PreparedStatement ps;
         if(id == null){
             ps = c.prepareStatement(_delete_all_query);
@@ -86,5 +84,11 @@ public class UserDao{
         
         ps.close();
         c.close();
+    }
+
+    private Connection getConnection() throws ClassNotFoundException, SQLException{
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection c = DriverManager.getConnection(_url,_user,_pw);
+        return c;
     }
 }
