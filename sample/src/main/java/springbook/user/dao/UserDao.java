@@ -15,7 +15,7 @@ public abstract class UserDao{
     private final static String _delete_query = "DELETE FROM users WHERE id = ?";
 
     public UserDao(){
-        simpleConnectionMaker = new SimpleConnectionMaker();
+        simpleConnectionMaker = new KConnectionMaker();
     }
 
     public void add(User user)throws ClassNotFoundException, SQLException{
