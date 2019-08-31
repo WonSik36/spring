@@ -9,12 +9,12 @@ import java.sql.*;
 
 public class UserDao{
     private ConnectionMaker ConnectionMaker;
-    private final static String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
-    private final static String _select_query = "SELECT * FROM users WHERE id = ?";
-    private final static String _delete_all_query = "DELETE FROM users";
-    private final static String _delete_query = "DELETE FROM users WHERE id = ?";
+    private static final String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
+    private static final String _select_query = "SELECT * FROM users WHERE id = ?";
+    private static final String _delete_all_query = "DELETE FROM users";
+    private static final String _delete_query = "DELETE FROM users WHERE id = ?";
 
-    public UserDao(ConnectionMaker cm){
+    public void setConnectionMaker(ConnectionMaker cm){
         this.ConnectionMaker = cm;
     }
 

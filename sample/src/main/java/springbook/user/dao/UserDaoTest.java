@@ -27,5 +27,8 @@ public class UserDaoTest{
         System.out.println(user2.getPassword());
 
         System.out.println(user2.getId()+" Inquire Success");
+
+        CountingConnectionMaker ccm = context.getBean("countingConnectionMaker",CountingConnectionMaker.class);
+        System.out.println("Connection count: "+ccm.getCount());
     }
 }
