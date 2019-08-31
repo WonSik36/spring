@@ -17,6 +17,8 @@ public class DaoFactory{
     }
     @Bean
     public ConnectionMaker countingConnectionMaker(){
-        return new CountingConnectionMaker(connectionMaker());
+        CountingConnectionMaker ccm = new CountingConnectionMaker();
+        ccm.setConnectionMaker(connectionMaker());
+        return ccm;
     }
 }
