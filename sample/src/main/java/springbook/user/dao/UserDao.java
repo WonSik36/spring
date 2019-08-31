@@ -6,20 +6,21 @@ package springbook.user.dao;
 
 import springbook.user.domain.User;
 import java.sql.*;
+import javax.sql.DataSource;
 
 public class UserDao{
-    private ConnectionMaker ConnectionMaker;
+    private DataSource dataSource;
     private static final String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
     private static final String _select_query = "SELECT * FROM users WHERE id = ?";
     private static final String _delete_all_query = "DELETE FROM users";
     private static final String _delete_query = "DELETE FROM users WHERE id = ?";
 
-    public void setConnectionMaker(ConnectionMaker cm){
-        this.ConnectionMaker = cm;
+    public void setDataSource(DataSource ds){
+        this.dataSource = ds;
     }
 
     public void add(User user)throws ClassNotFoundException, SQLException{
-        Connection c = ConnectionMaker.makeNewConnection();
+        Connection c = dataSource.getConnection();
         PreparedStatement ps = c.prepareStatement(_insert_query);
         ps.setString(1, user.getId());
         ps.setString(2, user.getName());
@@ -32,7 +33,7 @@ public class UserDao{
     }
 
     public User get(String id)throws ClassNotFoundException, SQLException{
-        Connection c = ConnectionMaker.makeNewConnection();
+        Connection c = dataSource.getConnection();
         PreparedStatement ps = c.prepareStatement(_select_query);
         ps.setString(1, id);
 
@@ -51,7 +52,7 @@ public class UserDao{
     }
 
     public void delete(String id)throws ClassNotFoundException, SQLException{
-        Connection c = ConnectionMaker.makeNewConnection();
+        Connection c = dataSource.getConnection();
         PreparedStatement ps;
         if(id == null){
             ps = c.prepareStatement(_delete_all_query);

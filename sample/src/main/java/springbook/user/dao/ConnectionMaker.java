@@ -1,3 +1,6 @@
+/*
+    Deprecated...
+*/
 package springbook.user.dao;
 
 import java.sql.*;
