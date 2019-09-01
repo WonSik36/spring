@@ -1,10 +1,10 @@
 package springbook;
 
-import springbook.user.dao.*;
+import org.junit.runner.JUnitCore;
 
 public class App 
 {
     public static void main( String[] args )throws Exception{
-        UserDaoTest.main(null);
+        JUnitCore.main("springbook.user.dao.UserDaoTest");
     }
 }
