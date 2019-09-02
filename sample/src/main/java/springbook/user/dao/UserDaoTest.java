@@ -2,18 +2,29 @@ package springbook.user.dao;
 
 import springbook.user.domain.User; 
 import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 // import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+// import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 // each test, object is made all time
 // so it is okay to make instance variable
+// but applicationContext is made all time so it should be static
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="/applicationContext.xml")
 public class UserDaoTest{
+	@Autowired
+//	private ApplicationContext context;
     private UserDao dao;
     private User u1;
     private User u2;
@@ -22,8 +33,7 @@ public class UserDaoTest{
 	@Before
     public void setUp() {
 		// ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        ApplicationContext context = new GenericXmlApplicationContext("springbook/applicationContext.xml");
-        this.dao = context.getBean("userDao",UserDao.class);
+//        this.dao = context.getBean("userDao",UserDao.class);
         u1 = new User("harry", "harry poter", "magician");
     	u2 = new User("henry", "3rd", "magaret");
     	u3 = new User("sam", "smith", "mouse");
