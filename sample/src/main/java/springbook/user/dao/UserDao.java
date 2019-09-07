@@ -21,17 +21,20 @@ public class UserDao{
         this.dataSource = ds;
     }
 
-    public void add(User user)throws ClassNotFoundException, SQLException{
-        Connection c = dataSource.getConnection();
-        PreparedStatement ps = c.prepareStatement(_insert_query);
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+    public void add(final User user)throws ClassNotFoundException, SQLException{
+    	jdbcContextWithStatementStrategy(
+    			new StatementStrategy() {
+    				public PreparedStatement makePreparedStatement(Connection c)
+    						throws SQLException{
+    					PreparedStatement ps = c.prepareStatement(_insert_query);
+    					ps.setString(1,user.getId());
+    					ps.setString(2,user.getName());
+    					ps.setString(3,user.getPassword());
+    					
+    					return ps;
+    				}
+    			}
+    	);
     }
 
     public User get(String id)throws ClassNotFoundException, SQLException{
@@ -55,9 +58,23 @@ public class UserDao{
         return user;
     }
 
-    public void delete(String id)throws ClassNotFoundException, SQLException{
-    	StatementStrategy st = new DeleteAllStatement(); 
-    	jdbcContextWithStatementStrategy(st);
+    public void delete(final String id)throws ClassNotFoundException, SQLException{
+    	jdbcContextWithStatementStrategy(
+    			new StatementStrategy() {
+    				public PreparedStatement makePreparedStatement(Connection c)
+    						throws SQLException{
+    					PreparedStatement ps = null;
+    					if(id != null) {
+    						ps = c.prepareStatement(_delete_query);	
+    						ps.setString(1,id);
+    					}else {
+    						ps = c.prepareStatement(_delete_all_query);	
+    					}
+    					
+    					return ps;
+    				}
+    			}
+    	);
     }
     
     public int getCount() throws ClassNotFoundException, SQLException{
