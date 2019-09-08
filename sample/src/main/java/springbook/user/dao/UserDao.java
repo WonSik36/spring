@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 public class UserDao{
     private DataSource dataSource;
+    private JdbcContext jdbcContext;
     private static final String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
     private static final String _select_query = "SELECT * FROM users WHERE id = ?";
     private static final String _delete_all_query = "DELETE FROM users";
@@ -21,8 +22,12 @@ public class UserDao{
         this.dataSource = ds;
     }
 
+    public void setJdbcContext(JdbcContext jc){
+        this.jdbcContext = jc;
+    }
+    
     public void add(final User user)throws ClassNotFoundException, SQLException{
-    	jdbcContextWithStatementStrategy(
+    	jdbcContext.workWithStatementStrategy(
     			new StatementStrategy() {
     				public PreparedStatement makePreparedStatement(Connection c)
     						throws SQLException{
@@ -59,7 +64,7 @@ public class UserDao{
     }
 
     public void delete(final String id)throws ClassNotFoundException, SQLException{
-    	jdbcContextWithStatementStrategy(
+    	jdbcContext.workWithStatementStrategy(
     			new StatementStrategy() {
     				public PreparedStatement makePreparedStatement(Connection c)
     						throws SQLException{
