@@ -26,7 +26,7 @@ public class UserDao{
         this.jdbcContext = jc;
     }
     
-    public void add(final User user)throws ClassNotFoundException, SQLException{
+    public void add(final User user)throws SQLException{
     	jdbcContext.workWithStatementStrategy(
     			new StatementStrategy() {
     				public PreparedStatement makePreparedStatement(Connection c)
@@ -42,7 +42,7 @@ public class UserDao{
     	);
     }
 
-    public User get(String id)throws ClassNotFoundException, SQLException{
+    public User get(String id)throws SQLException{
         Connection c = dataSource.getConnection();
         PreparedStatement ps = c.prepareStatement(_select_query);
         ps.setString(1, id);
@@ -63,26 +63,24 @@ public class UserDao{
         return user;
     }
 
-    public void delete(final String id)throws ClassNotFoundException, SQLException{
+    public void delete(final String id)throws SQLException{
     	jdbcContext.workWithStatementStrategy(
     			new StatementStrategy() {
     				public PreparedStatement makePreparedStatement(Connection c)
     						throws SQLException{
-    					PreparedStatement ps = null;
-    					if(id != null) {
-    						ps = c.prepareStatement(_delete_query);	
-    						ps.setString(1,id);
-    					}else {
-    						ps = c.prepareStatement(_delete_all_query);	
-    					}
-    					
+    					PreparedStatement ps = c.prepareStatement(_delete_query);	
+    					ps.setString(1,id);
     					return ps;
     				}
     			}
     	);
     }
     
-    public int getCount() throws ClassNotFoundException, SQLException{
+    public void deleteAll()throws SQLException{
+    	jdbcContext.executeSql(_delete_all_query);
+    }
+    
+    public int getCount() throws SQLException{
     	Connection c = dataSource.getConnection();
     	PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM USERS");
     	ResultSet rs = ps.executeQuery();
@@ -94,21 +92,5 @@ public class UserDao{
     	c.close();
     	
     	return count;
-    }
-    
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt)throws SQLException{
-    	Connection c = null;
-        PreparedStatement ps = null;
-        try {
-        	c = dataSource.getConnection();
-        	ps = stmt.makePreparedStatement(c);
-
-        	ps.executeUpdate();
-        }catch(SQLException e) {
-        	throw e;
-        }finally {
-        	if(ps!=null) {try {ps.close();}catch(SQLException e) {}}
-        	if(c!=null) {try {c.close();}catch(SQLException e) {}}
-        }
     }
 }
