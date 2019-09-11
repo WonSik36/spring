@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class UserDao{
     private DataSource dataSource;
-    private JdbcContext jdbcContext;
     private JdbcTemplate jdbcTemplate;
     private static final String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
     private static final String _select_query = "SELECT * FROM users WHERE id = ?";
@@ -25,9 +24,6 @@ public class UserDao{
     private static final String _delete_query = "DELETE FROM users WHERE id = ?";
     private static final String _count_query = "SELECT COUNT(*) FROM users";
 
-    public void setJdbcContext(JdbcContext jc){
-        this.jdbcContext = jc;
-    }
     
     public void setDataSource(DataSource dataSource) {
     	this.jdbcTemplate = new JdbcTemplate(dataSource);
