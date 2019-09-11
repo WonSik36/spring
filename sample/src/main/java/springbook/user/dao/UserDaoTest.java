@@ -1,6 +1,8 @@
 package springbook.user.dao;
 
-import springbook.user.domain.User; 
+import springbook.user.domain.User;
+
+import java.util.List;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +36,13 @@ public class UserDaoTest{
     public void setUp() {
 		// ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
 //        this.dao = context.getBean("userDao",UserDao.class);
-        u1 = new User("harry", "harry poter", "magician");
-    	u2 = new User("henry", "3rd", "magaret");
-    	u3 = new User("sam", "smith", "mouse");
+		u1 = new User("sam", "smith", "mouse");
+        u2 = new User("harry", "harry poter", "magician");
+        u3 = new User("henry", "3rd", "magaret");
     }
 	
 	@Test
-    public void addAndGet() throws ClassNotFoundException, SQLException{
+    public void addAndGet(){
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
         
@@ -60,7 +62,7 @@ public class UserDaoTest{
         assertThat(u3.getPassword(), is(u2.getPassword()));
     }
     @Test
-    public void count() throws SQLException, ClassNotFoundException{
+    public void count(){
     	dao.deleteAll();
     	assertThat(dao.getCount(), is(0));
     	
@@ -75,10 +77,39 @@ public class UserDaoTest{
     }
     
     @Test(expected=EmptyResultDataAccessException.class)
-    public void getUserFailure() throws SQLException, ClassNotFoundException{
+    public void getUserFailure(){
     	dao.deleteAll();
     	assertThat(dao.getCount(), is(0));
     	
     	dao.get("unknown_id");
+    }
+    
+    @Test
+    public void getAll() {
+    	dao.deleteAll();
+    	
+    	dao.add(u1);
+    	List<User> user1 = dao.getAll();
+    	assertThat(user1.size(), is(1));
+    	checkSameUser(u1,user1.get(0));
+    	
+    	dao.add(u2);
+    	List<User> user2 = dao.getAll();
+    	assertThat(user2.size(), is(2));
+    	checkSameUser(u2,user2.get(0));
+    	checkSameUser(u1,user2.get(1));
+    	
+    	dao.add(u3);
+    	List<User> user3 = dao.getAll();
+    	assertThat(user3.size(), is(3));
+    	checkSameUser(u2,user3.get(0));
+    	checkSameUser(u3,user3.get(1));
+    	checkSameUser(u1,user3.get(2));
+    }
+    
+    private void checkSameUser(User u1, User u2) {
+    	assertThat(u1.getId(), is(u2.getId()));
+    	assertThat(u1.getName(), is(u2.getName()));
+    	assertThat(u1.getPassword(), is(u2.getPassword()));
     }
 }
