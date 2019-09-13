@@ -46,9 +46,6 @@ public class UserDaoTest{
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
         
-        User u1 = new User("harry", "harry poter", "magician");
-    	User u2 = new User("henry", "3rd", "magaret");
-
         dao.add(u1);
         dao.add(u2);
         assertThat(dao.getCount(), is(2));
@@ -87,6 +84,10 @@ public class UserDaoTest{
     @Test
     public void getAll() {
     	dao.deleteAll();
+    	
+    	// negative test
+    	List<User> user0 = dao.getAll();
+    	assertThat(user0.size(), is(0));
     	
     	dao.add(u1);
     	List<User> user1 = dao.getAll();
