@@ -51,12 +51,10 @@ public class UserDaoTest{
         assertThat(dao.getCount(), is(2));
 
         User u3 = dao.get(u1.getId());
-        assertThat(u3.getName(), is(u1.getName()));
-        assertThat(u3.getPassword(), is(u1.getPassword()));
+        checkSameUser(u3,u1);
         
         u3 = dao.get(u2.getId());
-        assertThat(u3.getName(), is(u2.getName()));
-        assertThat(u3.getPassword(), is(u2.getPassword()));
+        checkSameUser(u3,u2);
     }
     @Test
     public void count(){

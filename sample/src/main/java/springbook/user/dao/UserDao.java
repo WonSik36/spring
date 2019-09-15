@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import com.mysql.cj.exceptions.MysqlErrorNumbers;
 
 public class UserDao{
     private JdbcTemplate jdbcTemplate;
@@ -34,12 +35,20 @@ public class UserDao{
     	this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
     
-    public void add(final User user){
-    	this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword());
+    public void add(final User user)throws DuplicateUserIdException{
+//    	this annotation is for generalization of runtime exceptions
+//    	try {
+    		this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword());    		
+//    	}catch(SQLException e) {
+//    		if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY)
+//    			throw new DuplicateUserIdException(e);
+//    		else
+//    			throw new RuntimeException(e);
+//    	}
     }
 
-    public User get(String id)throws EmptyResultDataAccessException{
-        return this.jdbcTemplate.queryForObject(_select_query, new Object[] {id}, userMapper);
+    public User get(String id){
+    	return this.jdbcTemplate.queryForObject(_select_query, new Object[] {id}, userMapper);
     }
     
     public List<User> getAll(){
