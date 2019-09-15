@@ -8,6 +8,8 @@ import springbook.user.domain.User;
 import java.sql.*;
 import java.util.List;
 import javax.sql.DataSource;
+
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -36,15 +38,11 @@ public class UserDao{
     }
     
     public void add(final User user)throws DuplicateUserIdException{
-//    	this annotation is for generalization of runtime exceptions
-//    	try {
+    	try {
     		this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword());    		
-//    	}catch(SQLException e) {
-//    		if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY)
-//    			throw new DuplicateUserIdException(e);
-//    		else
-//    			throw new RuntimeException(e);
-//    	}
+    	}catch(DuplicateKeyException e) {
+    		throw new DuplicateUserIdException(e);
+    	}
     }
 
     public User get(String id){
