@@ -1,67 +1,13 @@
-/*
-*   ref: toby's spring 3.1
-*    author: toby.epril.com
-*/
 package springbook.user.dao;
 
-import springbook.user.domain.User;
-import java.sql.*;
 import java.util.List;
-import javax.sql.DataSource;
+import springbook.user.domain.User;
 
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import com.mysql.cj.exceptions.MysqlErrorNumbers;
-
-public class UserDao{
-    private JdbcTemplate jdbcTemplate;
-    private static final String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
-    private static final String _select_query = "SELECT * FROM users WHERE id = ?";
-    private static final String _select_all_query = "SELECT * FROM users ORDER BY id";
-    private static final String _delete_all_query = "DELETE FROM users";
-    private static final String _delete_query = "DELETE FROM users WHERE id = ?";
-    private static final String _count_query = "SELECT COUNT(*) FROM users";
-    private RowMapper<User> userMapper = new RowMapper<User>() {
-    	public User mapRow(ResultSet rs, int rowNum)throws SQLException{
-			User user = new User();
-			user.setId(rs.getString("id"));
-			user.setName(rs.getString("name"));
-			user.setPassword(rs.getString("password"));
-			return user;
-		}
-    };
-    
-    public void setDataSource(DataSource dataSource) {
-    	this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-    
-    public void add(final User user)throws DuplicateUserIdException{
-    	try {
-    		this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword());    		
-    	}catch(DuplicateKeyException e) {
-    		throw new DuplicateUserIdException(e);
-    	}
-    }
-
-    public User get(String id){
-    	return this.jdbcTemplate.queryForObject(_select_query, new Object[] {id}, userMapper);
-    }
-    
-    public List<User> getAll(){
-    	return this.jdbcTemplate.query(_select_all_query,userMapper);
-    }
-
-    public void delete(final String id){
-    	this.jdbcTemplate.update(_delete_query,id);
-    }
-    
-    public void deleteAll(){
-    	this.jdbcTemplate.update(_delete_all_query);
-    }
-    
-    public int getCount(){
-    	return this.jdbcTemplate.queryForInt(_count_query);
-    }
+public interface UserDao {
+	void add(User user);
+	User get(String id);
+	List<User> getAll();
+	void delete(String id);
+	void deleteAll();
+	int getCount();
 }

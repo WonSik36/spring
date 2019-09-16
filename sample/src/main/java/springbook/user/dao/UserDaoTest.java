@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
 // import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 // import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,8 +27,7 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserDaoTest{
 	@Autowired
-//	private ApplicationContext context;
-    private UserDao dao;
+    private UserDao dao;	// @Autowired search appropriate bean in application context
     private User u1;
     private User u2;
     private User u3;
@@ -104,6 +104,14 @@ public class UserDaoTest{
     	checkSameUser(u2,user3.get(0));
     	checkSameUser(u3,user3.get(1));
     	checkSameUser(u1,user3.get(2));
+    }
+    
+    @Test(expected=DataAccessException.class)
+    public void duplicateKey() {
+    	dao.deleteAll();
+    	
+    	dao.add(u1);
+    	dao.add(u1);
     }
     
     private void checkSameUser(User u1, User u2) {
