@@ -1,12 +1,9 @@
 package springbook.user.dao;
 
-import springbook.user.domain.User;
-
+import springbook.user.domain.*;
 import java.sql.SQLException;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,9 +35,9 @@ public class UserDaoTest{
     public void setUp() {
 		// ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
 //        this.dao = context.getBean("userDao",UserDao.class);
-		u1 = new User("sam", "smith", "mouse");
-        u2 = new User("harry", "harry poter", "magician");
-        u3 = new User("henry", "3rd", "magaret");
+		u1 = new User("sam", "smith", "mouse",Level.BASIC, 1, 0);
+        u2 = new User("harry", "harry poter", "magician",Level.SILVER, 55, 10);
+        u3 = new User("henry", "3rd", "magaret",Level.GOLD, 100, 40);
     }
 	
 	@Test
@@ -133,5 +130,8 @@ public class UserDaoTest{
     	assertThat(u1.getId(), is(u2.getId()));
     	assertThat(u1.getName(), is(u2.getName()));
     	assertThat(u1.getPassword(), is(u2.getPassword()));
+    	assertThat(u1.getLevel(), is(u2.getLevel()));
+    	assertThat(u1.getLogin(), is(u2.getLogin()));
+    	assertThat(u1.getRecommend(), is(u2.getRecommend()));
     }
 }

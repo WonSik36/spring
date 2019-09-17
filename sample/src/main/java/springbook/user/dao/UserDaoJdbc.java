@@ -4,7 +4,7 @@
 */
 package springbook.user.dao;
 
-import springbook.user.domain.User;
+import springbook.user.domain.*;
 import java.sql.*;
 import java.util.List;
 import javax.sql.DataSource;
@@ -17,7 +17,8 @@ import com.mysql.cj.exceptions.MysqlErrorNumbers;
 
 public class UserDaoJdbc implements UserDao{
     private JdbcTemplate jdbcTemplate;
-    private static final String _insert_query = "INSERT INTO users(id,name,password) values(?,?,?)";
+    private static final String _insert_query = "INSERT INTO users(id,name,password,level,login,recommend) "
+    		+ "values(?,?,?,?,?,?)";
     private static final String _select_query = "SELECT * FROM users WHERE id = ?";
     private static final String _select_all_query = "SELECT * FROM users ORDER BY id";
     private static final String _delete_all_query = "DELETE FROM users";
@@ -29,6 +30,9 @@ public class UserDaoJdbc implements UserDao{
 			user.setId(rs.getString("id"));
 			user.setName(rs.getString("name"));
 			user.setPassword(rs.getString("password"));
+			user.setLevel(Level.valueOf(rs.getInt("level")));
+			user.setLogin(rs.getInt("login"));
+			user.setRecommend(rs.getInt("recommend"));
 			return user;
 		}
     };
@@ -38,7 +42,8 @@ public class UserDaoJdbc implements UserDao{
     }
     
     public void add(final User user){
-    	this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword());    		
+    	this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword(),
+    			user.getLevel().intValue(),user.getLogin(),user.getRecommend());    		
     }
 
     public User get(String id){
