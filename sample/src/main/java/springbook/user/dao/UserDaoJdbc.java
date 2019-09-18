@@ -19,6 +19,8 @@ public class UserDaoJdbc implements UserDao{
     private JdbcTemplate jdbcTemplate;
     private static final String _insert_query = "INSERT INTO users(id,name,password,level,login,recommend) "
     		+ "values(?,?,?,?,?,?)";
+    private static final String _update_query = "UPDATE users SET name=?,password=?,level=?,login=?,"
+    		+ "recommend=? WHERE id=?";
     private static final String _select_query = "SELECT * FROM users WHERE id = ?";
     private static final String _select_all_query = "SELECT * FROM users ORDER BY id";
     private static final String _delete_all_query = "DELETE FROM users";
@@ -44,6 +46,10 @@ public class UserDaoJdbc implements UserDao{
     public void add(final User user){
     	this.jdbcTemplate.update(_insert_query,user.getId(),user.getName(),user.getPassword(),
     			user.getLevel().intValue(),user.getLogin(),user.getRecommend());    		
+    }
+    
+    public void update(User user) {
+    	this.jdbcTemplate.update(_update_query,user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend(),user.getId());
     }
 
     public User get(String id){
