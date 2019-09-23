@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
@@ -42,7 +43,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void upgradeLevels() {
+	public void upgradeLevels() throws Exception{
 		userDao.deleteAll();
 		for(User user: users) userDao.add(user);
 		
@@ -81,5 +82,25 @@ public class UserServiceTest {
 		}else {
 			assertThat(userUpdate.getLevel(), is(user.getLevel()));
 		}
+	}
+	
+	@Test
+	public void upgradeAllOrNothing()throws Exception{
+		UserLevelUpgradePolicy origin = this.userService.getUserLevelUpgradePolicy();
+		TestLevelUpgradePolicy policy = new TestLevelUpgradePolicy();
+		policy.setUserDao(userDao);
+		policy.setExceptionId(users.get(3).getId());
+		userService.setUserLevelUpgradePolicy(policy);
+		
+		userDao.deleteAll();
+		for(User user: users) userDao.add(user);
+		try {
+			userService.upgradeLevels();
+			fail("TestUserServiceException expected");
+		}catch(TestUserServiceException e){
+		}
+		
+		checkLevelUpgraded(users.get(1), false);
+		this.userService.setUserLevelUpgradePolicy(origin);
 	}
 }
