@@ -1,24 +1,23 @@
 package springbook.user.service;
 
 import springbook.user.domain.*;
-import java.sql.Connection;
-import java.util.List;
-import javax.sql.DataSource;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import springbook.user.dao.*;
+import java.util.List;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class UserService {
 	private UserDao userDao;
-	private DataSource dataSource;
+	private PlatformTransactionManager transactionManager;
 	private UserLevelUpgradePolicy userLevelUpgradePolicy;
 	
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 	
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
 	}
 	
 	public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
@@ -26,25 +25,18 @@ public class UserService {
 	}
 	
 	public void upgradeLevels()throws Exception{
-		TransactionSynchronizationManager.initSynchronization();
-		Connection c = DataSourceUtils.getConnection(dataSource);
-		c.setAutoCommit(false);
-		
+		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+	
 		try {
 			List<User> users = userDao.getAll();
-			
 			for(User user:users) {
 				if(userLevelUpgradePolicy.canUpgradeLevel(user))
 					userLevelUpgradePolicy.upgradeLevel(user);
 			}
-			c.commit();
+			transactionManager.commit(status);
 		}catch(Exception e) {
-			c.rollback();
+			transactionManager.rollback(status);
 			throw e;
-		}finally {
-			DataSourceUtils.releaseConnection(c, dataSource);
-			TransactionSynchronizationManager.unbindResource(this.dataSource);
-			TransactionSynchronizationManager.clearSynchronization();
 		}
 	}
 
