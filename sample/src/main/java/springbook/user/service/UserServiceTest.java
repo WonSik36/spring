@@ -6,8 +6,10 @@ import static springbook.user.service.VacationLevelUpgradePolicy.MIN_LOGCOUNT_FO
 import static springbook.user.service.VacationLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.Arrays;
@@ -24,6 +26,10 @@ public class UserServiceTest {
 	private UserService userService;
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	@Autowired
+	private MailSender mailSender;
 	private List<User> users;
 	
 	@Before
@@ -86,21 +92,20 @@ public class UserServiceTest {
 	
 	@Test
 	public void upgradeAllOrNothing()throws Exception{
-		UserLevelUpgradePolicy origin = this.userService.getUserLevelUpgradePolicy();
-		TestLevelUpgradePolicy policy = new TestLevelUpgradePolicy();
-		policy.setUserDao(userDao);
-		policy.setExceptionId(users.get(3).getId());
-		userService.setUserLevelUpgradePolicy(policy);
+		UserService testUserService = new TestUserService(users.get(3).getId());
+		testUserService.setUserDao(userDao);
+		testUserService.setTransactionManager(transactionManager);
+		testUserService.setUserLevelUpgradePolicy(new VacationLevelUpgradePolicy());
+		testUserService.setMailSender(mailSender);
 		
 		userDao.deleteAll();
 		for(User user: users) userDao.add(user);
 		try {
-			userService.upgradeLevels();
+			testUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		}catch(TestUserServiceException e){
 		}
 		
 		checkLevelUpgraded(users.get(1), false);
-		this.userService.setUserLevelUpgradePolicy(origin);
 	}
 }
