@@ -33,11 +33,9 @@ public class UserDaoTest{
 	
 	@Before
     public void setUp() {
-		// ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-//        this.dao = context.getBean("userDao",UserDao.class);
-		u1 = new User("sam", "smith", "mouse",Level.BASIC, 1, 0);
-        u2 = new User("harry", "harry poter", "magician",Level.SILVER, 55, 10);
-        u3 = new User("henry", "3rd", "magaret",Level.GOLD, 100, 40);
+		u1 = new User("sam", "smith", "mouse",Level.BASIC, 1, 0, "hello@wolrd.com");
+        u2 = new User("harry", "harry poter", "magician",Level.SILVER, 55, 10,"happy@wolrd.com");
+        u3 = new User("henry", "3rd", "magaret",Level.GOLD, 100, 40,"spring@wolrd.com");
     }
 	
 	@Test
@@ -138,8 +136,8 @@ public class UserDaoTest{
     	u1.setLevel(Level.GOLD);
     	u1.setLogin(1000);
     	u1.setRecommend(300);
+    	u1.setEMail("hi@world.com");
     	dao.update(u1);
-    	
     	User u1Update = dao.get(u1.getId());
     	checkSameUser(u1,u1Update);
     	User u2Update = dao.get(u2.getId());
@@ -153,5 +151,6 @@ public class UserDaoTest{
     	assertThat(u1.getLevel(), is(u2.getLevel()));
     	assertThat(u1.getLogin(), is(u2.getLogin()));
     	assertThat(u1.getRecommend(), is(u2.getRecommend()));
+    	assertThat(u1.getEMail(), is(u2.getEMail()));
     }
 }

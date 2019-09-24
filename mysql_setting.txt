@@ -8,7 +8,8 @@ CREATE TABLE users(
     password varchar(20) not null,
     level tinyint not null,
     login int not null,
-    recommend int not null
+    recommend int not null,
+    email varchar(20) not null
 );
 
 Server time zone should be editted
