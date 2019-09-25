@@ -7,6 +7,7 @@ import static springbook.user.service.VacationLevelUpgradePolicy.MIN_RECOMMEND_F
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,14 +23,11 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserServiceTest {
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private UserDao userDao;
-	@Autowired
-	private PlatformTransactionManager transactionManager;
-	@Autowired
-	private MailSender mailSender;
+	@Autowired private UserService userService;
+	@Autowired private UserServiceImpl userServiceImpl;
+	@Autowired private UserDao userDao;
+	@Autowired private MailSender mailSender;
+	@Autowired private PlatformTransactionManager transactionManager;
 	private List<User> users;
 	
 	@Before
@@ -49,9 +47,13 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@DirtiesContext
 	public void upgradeLevels() throws Exception{
 		userDao.deleteAll();
 		for(User user: users) userDao.add(user);
+		
+		MockMailSender mockMailSender = new MockMailSender();
+		userServiceImpl.setMailSender(mockMailSender);
 		
 		userService.upgradeLevels();
 		
@@ -60,6 +62,11 @@ public class UserServiceTest {
 		checkLevelUpgraded(users.get(2),false);
 		checkLevelUpgraded(users.get(3),true);
 		checkLevelUpgraded(users.get(4),false);
+		
+		List<String> request = mockMailSender.getRequests();
+		assertThat(request.size(), is(2));
+		assertThat(request.get(0), is(users.get(1).getEMail()));
+		assertThat(request.get(1), is(users.get(3).getEMail()));
 	}
 	
 	@Test
@@ -92,16 +99,19 @@ public class UserServiceTest {
 	
 	@Test
 	public void upgradeAllOrNothing()throws Exception{
-		UserService testUserService = new TestUserService(users.get(3).getId());
+		UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(userDao);
-		testUserService.setTransactionManager(transactionManager);
 		testUserService.setUserLevelUpgradePolicy(new VacationLevelUpgradePolicy());
 		testUserService.setMailSender(mailSender);
+		
+		UserServiceTx txUserService = new UserServiceTx();
+		txUserService.setTransactionManager(transactionManager);
+		txUserService.setUserService(testUserService);
 		
 		userDao.deleteAll();
 		for(User user: users) userDao.add(user);
 		try {
-			testUserService.upgradeLevels();
+			txUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		}catch(TestUserServiceException e){
 		}
