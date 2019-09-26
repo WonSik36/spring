@@ -1,8 +1,9 @@
-package springbook.user.dao;
+package springbook.user.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
 public class MockUserDao implements UserDao {
