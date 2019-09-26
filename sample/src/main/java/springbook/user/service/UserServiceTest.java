@@ -1,6 +1,6 @@
 package springbook.user.service;
 
-import springbook.user.dao.UserDao;
+import springbook.user.dao.*;
 import springbook.user.domain.*;
 import static springbook.user.service.VacationLevelUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.VacationLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
@@ -47,26 +47,31 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	@DirtiesContext
 	public void upgradeLevels() throws Exception{
-		userDao.deleteAll();
-		for(User user: users) userDao.add(user);
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
 		
+		MockUserDao mockUserDao = new MockUserDao(this.users);
+		userServiceImpl.setUserDao(mockUserDao);
 		MockMailSender mockMailSender = new MockMailSender();
 		userServiceImpl.setMailSender(mockMailSender);
+		userServiceImpl.setUserLevelUpgradePolicy(new VacationLevelUpgradePolicy());
 		
-		userService.upgradeLevels();
-		
-		checkLevelUpgraded(users.get(0),false);
-		checkLevelUpgraded(users.get(1),true);
-		checkLevelUpgraded(users.get(2),false);
-		checkLevelUpgraded(users.get(3),true);
-		checkLevelUpgraded(users.get(4),false);
+		userServiceImpl.upgradeLevels();
+
+		List<User> updated = mockUserDao.getUpdated();
+		assertThat(updated.size(), is(2));
+		checkUserAndLevel(updated.get(0),"joytouch",Level.SILVER);
+		checkUserAndLevel(updated.get(1),"madnite1",Level.GOLD);
 		
 		List<String> request = mockMailSender.getRequests();
 		assertThat(request.size(), is(2));
 		assertThat(request.get(0), is(users.get(1).getEMail()));
 		assertThat(request.get(1), is(users.get(3).getEMail()));
+	}
+	
+	private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+		assertThat(updated.getId(), is(expectedId));
+		assertThat(updated.getLevel(), is(expectedLevel));
 	}
 	
 	@Test
