@@ -31,9 +31,9 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserServiceTest {
 	@Autowired private UserService userService;
+	@Autowired private UserService testUserService;
 	@Autowired private UserDao userDao;
 	@Autowired private MailSender mailSender;
-	@Autowired private PlatformTransactionManager transactionManager;
 	@Autowired private ApplicationContext context;
 	private List<User> users;
 	
@@ -137,26 +137,31 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	@DirtiesContext
-	public void upgradeAllOrNothing()throws Exception{
-		UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
-		testUserService.setUserDao(userDao);
-		testUserService.setUserLevelUpgradePolicy(new VacationLevelUpgradePolicy());
-		testUserService.setMailSender(mailSender);
-		
-		ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-		txProxyFactoryBean.setTarget(testUserService);
-		UserService txUserService = (UserService)txProxyFactoryBean.getObject();
-		
+	public void upgradeAllOrNothing()throws Exception{		
 		
 		userDao.deleteAll();
 		for(User user: users) userDao.add(user);
 		try {
-			txUserService.upgradeLevels();
+			this.testUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		}catch(TestUserServiceException e){
 		}
 		
 		checkLevelUpgraded(users.get(1), false);
+	}
+	
+	static class TestUserServiceImpl extends UserServiceImpl {
+		private String id = "madnite1";
+		
+		
+		protected void upgradeLevel(User user) {
+			if(user.getId().contentEquals(this.id)) throw new TestUserServiceException();
+			super.upgradeLevel(user);
+		}
+	}
+	
+	@Test
+	public void advisorAutoProxyCreator() {
+		assertThat(testUserService, is(java.lang.reflect.Proxy.class));
 	}
 }
