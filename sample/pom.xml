@@ -119,6 +119,12 @@
 		<artifactId>spring-aop</artifactId>
 		<version>3.0.7.RELEASE</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->
+	<dependency>
+	    <groupId>org.aspectj</groupId>
+	    <artifactId>aspectjtools</artifactId>
+	    <version>1.6.6</version>
+	</dependency>
   </dependencies>
   <build>
     <plugins>
