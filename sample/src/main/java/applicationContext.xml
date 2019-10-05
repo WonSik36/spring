@@ -10,9 +10,7 @@
 						http://www.springframework.org/schema/tx
 						http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 	<aop:config>
-		<aop:pointcut id="transactionPointcut"
-					expression="execution(* * ..*ServiceImpl.upgrade*(..))" />
-		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/>
+		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
 	</aop:config>
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
@@ -33,10 +31,6 @@
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
-	<bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
-		<property name="advice" ref="transactionAdvice"/>
-		<property name="pointcut" ref="transactionPointcut"/>
-	</bean>
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
 		<property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>

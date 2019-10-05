@@ -59,4 +59,29 @@ public class UserServiceImpl implements UserService{
 		
 		this.mailSender.send(mailMessage);
 	}
+
+	@Override
+	public User get(String id) {
+		return userDao.get(id);
+	}
+
+	@Override
+	public List<User> getAll() {
+		return userDao.getAll();
+	}
+
+	@Override
+	public void deleteAll() {
+		userDao.deleteAll();
+	}
+
+	@Override
+	public void delete(String id) {
+		userDao.delete(id);
+	}
+
+	@Override
+	public void update(User user) {
+		userDao.update(user);
+	}
 }
