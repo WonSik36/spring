@@ -6,9 +6,7 @@ import static springbook.user.service.VacationLevelUpgradePolicy.MIN_LOGCOUNT_FO
 import static springbook.user.service.VacationLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,10 +14,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertThat;
@@ -34,8 +32,7 @@ public class UserServiceTest {
 	@Autowired private UserService userService;
 	@Autowired private UserService testUserService;
 	@Autowired private UserDao userDao;
-	@Autowired private MailSender mailSender;
-	@Autowired private ApplicationContext context;
+	@Autowired private PlatformTransactionManager transactionManager;
 	private List<User> users;
 	
 	@Before
@@ -178,5 +175,32 @@ public class UserServiceTest {
 	@Test
 	public void advisorAutoProxyCreator() {
 		assertThat(testUserService, is(java.lang.reflect.Proxy.class));
+	}
+	
+	@Test
+	public void transactionSync() {
+		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();		
+		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+		
+		List<User> origin = userService.getAll();
+		try {
+			userService.deleteAll();
+			userService.add(users.get(0));
+			userService.add(users.get(1));
+			
+			List<User> beforeRollback = userService.getAll();
+			
+			assertThat(users.get(0).getId(), is(beforeRollback.get(0).getId()));
+			assertThat(users.get(1).getId(), is(beforeRollback.get(1).getId()));
+		}finally {
+			transactionManager.rollback(txStatus);
+		}
+		List<User> afterRollback = userService.getAll();
+		
+		assertThat(origin.size(), is(afterRollback.size()));
+		
+		for(int i=0;i<origin.size();i++) {
+			assertThat(origin.get(i).getId(), is(afterRollback.get(i).getId()));
+		}
 	}
 }

@@ -9,9 +9,19 @@
 						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 						http://www.springframework.org/schema/tx
 						http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<!-- 
 	<aop:config>
 		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
 	</aop:config>
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30"/>
+			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	 -->
+	 <tx:annotation-driven/>
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/spring"/>
@@ -24,13 +34,6 @@
 	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30"/>
-			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
-			<tx:method name="*" propagation="REQUIRED" />
-		</tx:attributes>
-	</tx:advice>
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
 		<property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
