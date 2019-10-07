@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.junit.Before;
 import org.junit.Test;
@@ -202,5 +203,13 @@ public class UserServiceTest {
 		for(int i=0;i<origin.size();i++) {
 			assertThat(origin.get(i).getId(), is(afterRollback.get(i).getId()));
 		}
+	}
+	
+	@Test
+	@Transactional // this annotation rollback after test
+	public void transactionalRollbackTest() {
+		userService.deleteAll();
+		userService.add(users.get(0));
+		userService.add(users.get(1));
 	}
 }
