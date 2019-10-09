@@ -12,18 +12,6 @@
 						http://www.springframework.org/schema/context/spring-context-3.0.xsd
 						http://www.springframework.org/schema/tx
 						http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
-	<!-- 
-	<aop:config>
-		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-	</aop:config>
-	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30"/>
-			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
-			<tx:method name="*" propagation="REQUIRED" />
-		</tx:attributes>
-	</tx:advice>
-	 -->
 	<tx:annotation-driven/>
 	<context:annotation-config/>
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -40,6 +28,8 @@
 		<property name="sqlService" ref="sqlService"/>
 	</bean>
 	<bean id="sqlService" class="springbook.user.sqlservice.XmlSqlService">
+		<property name="sqlReader" ref="sqlService"/>
+		<property name="sqlRegistry" ref="sqlService"/>
 		<property name="sqlmapFile" value="sqlmap.xml"/>
 	</bean>
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
