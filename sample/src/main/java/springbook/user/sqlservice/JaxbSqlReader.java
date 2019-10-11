@@ -9,7 +9,8 @@ import springbook.user.sqlservice.jaxb.SqlType;
 import springbook.user.sqlservice.jaxb.Sqlmap;
 
 public class JaxbSqlReader implements SqlReader {
-	private String sqlmapFile;
+	private static final String DEFAULT_SQLMAP_FILE = "sqlmap.xml";
+	private String sqlmapFile = DEFAULT_SQLMAP_FILE;
 	
 	@Override
 	public void read(SqlRegistry sqlRegistry) {
