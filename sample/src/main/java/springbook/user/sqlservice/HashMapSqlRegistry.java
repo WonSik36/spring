@@ -15,7 +15,7 @@ public class HashMapSqlRegistry implements SqlRegistry {
 	public String findSql(String key) throws SqlNotFoundException {
 		String sql = sqlMap.get(key);
 		if(sql == null)
-			throw new SqlRetrievalFailureException("can not found the key: "+key);
+			throw new SqlNotFoundException("can not found the key: "+key);
 		else
 			return sql;
 	}
