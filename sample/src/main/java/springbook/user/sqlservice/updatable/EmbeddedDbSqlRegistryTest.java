@@ -6,18 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
 public class EmbeddedDbSqlRegistryTest extends AbstractUpdatableSqlRegistryTest {
-	@Autowired
-	private UpdatableSqlRegistry updatableSqlRegistry;
 	private EmbeddedDatabase db;
 	
 	@Override
@@ -47,7 +40,7 @@ public class EmbeddedDbSqlRegistryTest extends AbstractUpdatableSqlRegistryTest 
 		sqlmap.put("KEY9999", "Modified9999");
 		
 		try {
-			updatableSqlRegistry.updateSql(sqlmap);
+			sqlRegistry.updateSql(sqlmap);
 			fail();
 		}catch(SqlUpdateFailureException e) {}
 		
