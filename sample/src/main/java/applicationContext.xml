@@ -41,6 +41,9 @@
 	<bean id="sqlRegistry" class="springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
 		<property name="dataSource" ref="embeddedDatabase"/>
 	</bean>
+	<bean id="updatableSqlRegistry" class="springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
+		<property name="dataSource" ref="embeddedDatabase"/>
+	</bean>
 	<jdbc:embedded-database id="embeddedDatabase" type="HSQL">
 		<jdbc:script location="classpath:springbook/user/sqlservice/updatable/sqlRegistrySchema.sql"/>
 	</jdbc:embedded-database>

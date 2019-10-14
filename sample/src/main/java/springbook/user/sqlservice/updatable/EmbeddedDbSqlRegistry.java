@@ -2,11 +2,12 @@ package springbook.user.sqlservice.updatable;
 
 import java.util.Map;
 import javax.sql.DataSource;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import springbook.user.sqlservice.SqlNotFoundException;
 
+@Transactional
 public class EmbeddedDbSqlRegistry implements UpdatableSqlRegistry {
 	SimpleJdbcTemplate jdbc;
 
