@@ -1,7 +1,9 @@
-package springbook.user.sqlservice;
+package springbook.user.sqlservice.updatable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import springbook.user.sqlservice.SqlNotFoundException;
 
 public class ConcurrentHashMapSqlRegistry implements UpdatableSqlRegistry {
 	private Map<String, String> sqlMap = new ConcurrentHashMap<String, String>();

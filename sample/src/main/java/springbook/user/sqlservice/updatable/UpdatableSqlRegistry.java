@@ -1,6 +1,8 @@
-package springbook.user.sqlservice;
+package springbook.user.sqlservice.updatable;
 
 import java.util.Map;
+
+import springbook.user.sqlservice.SqlRegistry;
 
 public interface UpdatableSqlRegistry extends SqlRegistry {
 	public void updateSql(String key, String sql) throws SqlUpdateFailureException;
