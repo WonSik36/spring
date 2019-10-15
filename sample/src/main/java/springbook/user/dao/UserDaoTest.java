@@ -1,5 +1,6 @@
 package springbook.user.dao;
 
+import springbook.TestApplicationContext;
 import springbook.user.domain.*;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertThat;
 // so it is okay to make instance variable
 // but applicationContext is made all time so it should be static
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
+@ContextConfiguration(classes=TestApplicationContext.class)
 public class UserDaoTest{
 	@Autowired
     private UserDao dao;	// @Autowired search appropriate bean in application context
