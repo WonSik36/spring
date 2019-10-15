@@ -23,6 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Resource;
+
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
@@ -33,7 +36,7 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(classes=TestApplicationContext.class)
 public class UserServiceTest {
 	@Autowired @Qualifier("userSerivce") private UserService userService;
-	@Autowired @Qualifier("testUserService") private UserService testUserService;
+	@Resource private UserService testUserService;
 	@Autowired private UserDao userDao;
 	@Autowired private PlatformTransactionManager transactionManager;
 	private List<User> users;
