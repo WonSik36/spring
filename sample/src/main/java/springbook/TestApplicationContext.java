@@ -17,21 +17,21 @@ import springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.mail.MailSender;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
 @Configuration
-@ImportResource("/test-applicationContext.xml")
+@EnableTransactionManagement
 public class TestApplicationContext {
 	
 	/*
-	 * DB Connection
+	 * DB Connection and Transaction
 	 * 
 	 */
 	@Bean
@@ -55,7 +55,7 @@ public class TestApplicationContext {
 	}
 	
 	/*
-	 * UserDao UserService
+	 * Application Logic and Test
 	 * 
 	 */
 	

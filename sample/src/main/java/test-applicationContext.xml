@@ -15,5 +15,57 @@
 						http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
 						http://www.springframework.org/schema/jdbc
 						http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+	<context:annotation-config/>
+
+	<!-- db -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/spring"/>
+		<property name="username" value="root"/>
+		<property name="password" value="tmfl3fkdzk4"/>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- sql service -->	
+	<bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
+		<property name="unmarshaller" ref="unmarshaller"/>
+		<property name="sqlmap" value="classpath:springbook/user/dao/sqlmap.xml"/>
+		<property name="sqlRegistry" ref="sqlRegistry"/>
+	</bean>
+	
+	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath" value="springbook.user.sqlservice.jaxb"/>
+	</bean>
+	
+	<bean id="sqlRegistry" class="springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
+		<property name="dataSource" ref="embeddedDatabase"/>
+	</bean>
+	
+	<jdbc:embedded-database id="embeddedDatabase" type="HSQL">
+		<jdbc:script location="classpath:springbook/user/sqlservice/updatable/sqlRegistrySchema.sql"/>
+	</jdbc:embedded-database>
+	
+	<!-- aop -->
 	<tx:annotation-driven/>
+	
+	<!-- application component -->
+	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlService" ref="sqlService"/>
+	</bean>
+	
+	<bean id="userService" class="springbook.user.service.UserServiceImpl">
+		<property name="userDao" ref="userDao" />
+		<property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
+		<property name="mailSender" ref="mailSender" />
+	</bean>
+	
+	<bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
+	
+	<bean id="userLevelUpgradePolicy" class="springbook.user.service.VacationLevelUpgradePolicy"/>
+	
+	<bean id="mailSender" class="springbook.user.service.DummyMailSender"/>
 </beans>
