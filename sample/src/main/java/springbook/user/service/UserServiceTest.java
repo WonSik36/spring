@@ -8,6 +8,7 @@ import static springbook.user.service.VacationLevelUpgradePolicy.MIN_RECOMMEND_F
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -31,8 +32,8 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=TestApplicationContext.class)
 public class UserServiceTest {
-	@Autowired private UserService userService;
-	@Autowired private UserService testUserService;
+	@Autowired @Qualifier("userSerivce") private UserService userService;
+	@Autowired @Qualifier("testUserService") private UserService testUserService;
 	@Autowired private UserDao userDao;
 	@Autowired private PlatformTransactionManager transactionManager;
 	private List<User> users;
@@ -155,7 +156,7 @@ public class UserServiceTest {
 		testUserService.getAll();
 	}
 	
-	static class TestUserServiceImpl extends UserServiceImpl {
+	public static class TestUserService extends UserServiceImpl {
 		private String id = "madnite1";
 		
 		
