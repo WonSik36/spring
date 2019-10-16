@@ -32,7 +32,7 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 @EnableTransactionManagement
 @ComponentScan(basePackages="springbook.user")
 public class TestApplicationContext {
-	@Autowired UserDao userDao;
+	
 	/*
 	 * DB Connection and Transaction
 	 * 
@@ -62,14 +62,8 @@ public class TestApplicationContext {
 	 * 
 	 */
 	
-	@Bean
-	public UserService userSerivce() {
-		UserServiceImpl service = new UserServiceImpl();
-		service.setUserDao(userDao);
-		service.setMailSender(mailSender());
-		service.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
-		return service;
-	}
+	@Autowired UserDao userDao;
+	@Autowired UserService userService;
 	
 	@Bean
 	public UserService testUserService() {

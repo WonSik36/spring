@@ -4,16 +4,20 @@ import springbook.user.domain.*;
 import springbook.user.dao.*;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+@Service("userService")
 public class UserServiceImpl implements UserService{
-	private UserDao userDao;
-	private UserLevelUpgradePolicy userLevelUpgradePolicy;
-	private MailSender mailSender;
+	@Autowired private UserDao userDao;
+	@Autowired private UserLevelUpgradePolicy userLevelUpgradePolicy;
+	@Autowired private MailSender mailSender;
 	
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;

@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=TestApplicationContext.class)
 public class UserServiceTest {
-	@Autowired @Qualifier("userSerivce") private UserService userService;
+	@Autowired private UserService userService;
 	@Resource private UserService testUserService;
 	@Autowired private UserDao userDao;
 	@Autowired private PlatformTransactionManager transactionManager;
