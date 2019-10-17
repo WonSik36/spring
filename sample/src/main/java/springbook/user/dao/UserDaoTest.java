@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
@@ -156,5 +157,13 @@ public class UserDaoTest{
     	assertThat(u1.getLogin(), is(u2.getLogin()));
     	assertThat(u1.getRecommend(), is(u2.getRecommend()));
     	assertThat(u1.getEMail(), is(u2.getEMail()));
+    }
+    
+    @Autowired DefaultListableBeanFactory bf;
+    @Test
+    public void beans() {
+    	for(String n: bf.getBeanDefinitionNames()) {
+    		System.out.println(n + "\t" + bf.getBean(n).getClass().getName());
+    	}
     }
 }
