@@ -11,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.junit.Before;
@@ -23,7 +24,8 @@ import static org.junit.Assert.assertThat;
 // so it is okay to make instance variable
 // but applicationContext is made all time so it should be static
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes= {AppContext.class, TestAppContext.class})
+@ActiveProfiles("test")
+@ContextConfiguration(classes=AppContext.class)
 public class UserDaoTest{
 	@Autowired
     private UserDao dao;	// @Autowired search appropriate bean in application context

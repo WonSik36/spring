@@ -19,7 +19,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="springbook.user") // for Autowired annotation of UserDao, UserService
-@Import(SqlServiceContext.class) // import SQL Service context
+@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class}) // import SQL Service context
 public class AppContext {
 	
 	/*
