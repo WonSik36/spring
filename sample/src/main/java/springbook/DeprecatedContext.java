@@ -15,9 +15,7 @@ import springbook.user.sqlservice.SqlRegistry;
 import springbook.user.sqlservice.SqlService;
 import springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -30,8 +28,7 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages="springbook.user")
-public class TestApplicationContext {
+public class DeprecatedContext {
 	
 	/*
 	 * DB Connection and Transaction
@@ -62,13 +59,27 @@ public class TestApplicationContext {
 	 * 
 	 */
 	
-	@Autowired UserDao userDao;
-	@Autowired UserService userService;
+	@Bean
+	public UserDao userDao() {
+		UserDaoJdbc dao = new UserDaoJdbc();
+		dao.setDataSource(dataSource());
+		dao.setSqlService(sqlService());
+		return dao;
+	}
+	
+	@Bean
+	public UserService userSerivce() {
+		UserServiceImpl service = new UserServiceImpl();
+		service.setUserDao(userDao());
+		service.setMailSender(mailSender());
+		service.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
+		return service;
+	}
 	
 	@Bean
 	public UserService testUserService() {
 		TestUserService testService = new TestUserService();
-		testService.setUserDao(userDao);
+		testService.setUserDao(userDao());
 		testService.setMailSender(mailSender());
 		testService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
 		return testService;

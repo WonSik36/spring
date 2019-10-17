@@ -1,6 +1,7 @@
 package springbook.user.service;
 
-import springbook.TestApplicationContext;
+import springbook.AppContext;
+import springbook.TestAppContext;
 import springbook.user.dao.*;
 import springbook.user.domain.*;
 import static springbook.user.service.VacationLevelUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER;
@@ -33,7 +34,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=TestApplicationContext.class)
+@ContextConfiguration(classes= {AppContext.class, TestAppContext.class})
 public class UserServiceTest {
 	@Autowired private UserService userService;
 	@Resource private UserService testUserService;
