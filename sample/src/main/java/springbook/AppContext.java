@@ -30,7 +30,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="springbook.user") // for Autowired annotation of UserDao, UserService
-@Import(SqlServiceContext.class) // import SQL Service context
+@EnableSqlService // import SQL Service context
 @PropertySource("/springbook/database.properties")
 public class AppContext implements SqlMapConfig{
 	@Value("${db.driverClass}") Class<? extends Driver> driverClass;
