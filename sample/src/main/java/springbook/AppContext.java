@@ -118,4 +118,13 @@ public class AppContext {
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
+	
+	/*
+	 *  sql map configuration
+	 *  this is for Sql Service
+	 */
+	@Bean
+	public SqlMapConfig sqlMapConfig() {
+		return new UserSqlMapConfig();
+	}
 }
